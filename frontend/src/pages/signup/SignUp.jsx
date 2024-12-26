@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import GenderCheckbox from "./GenderCheckbox";
 import { useState } from "react";
 import useSignup from "../../hooks/useSignup";
-
+import { useNavigate } from "react-router-dom";
 const SignUp = () => {
 	const [inputs, setInputs] = useState({
 		fullName: "",
@@ -13,14 +13,24 @@ const SignUp = () => {
 	});
 
 	const { loading, signup } = useSignup();
-
+	const navigate = useNavigate()
 	const handleCheckboxChange = (gender) => {
 		setInputs({ ...inputs, gender });
 	};
 
 	const handleSubmit = async (e) => {
+		// e.preventDefault();
+		// await signup(inputs);
 		e.preventDefault();
-		await signup(inputs);
+  console.log("Form Submitted", inputs);
+  const response = await signup(inputs);
+  if (response.success) {
+    // Redirect to login page
+    navigate("/login");  // assuming you're using react-router
+  } else {
+    // Show error message
+    alert(response.message || "An error occurred during signup.");
+  }
 	};
 
 	return (
